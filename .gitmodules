@@ -1,0 +1,6 @@
+[submodule "heroku"]
+	path = heroku
+	url = https://git.heroku.com/csi2132-group12.git
+[submodule "server"]
+	path = server
+	url = https://git.heroku.com/csi2132-group12.git
