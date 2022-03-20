@@ -5,13 +5,13 @@ $(document).ready(function() {
 		
 	socket.on('connect', function(){
 		console.log("Connected to the server.");
-		//socket.emit('mycoolevent', {myattribute: 15});	
 	});
 	
+	//Response from login attempts
 	socket.on('login_res', function(data) {
 		if(data.status == 'error') console.log(data.reason);
 		else{	
-			console.log("I logged in!");
+			console.log("Logged in as " + data.name + ".");
 		}
 	});
 });
