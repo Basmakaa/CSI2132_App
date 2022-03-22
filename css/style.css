@@ -1,0 +1,64 @@
+body{
+    background-color: #73877B;
+    padding: 0;
+    margin: 0;
+    font-family: 'Dosis', sans-serif;
+    
+}
+
+.Nav-bar{
+    background-color: #6461a0;
+    margin: 0px;
+    overflow: hidden;
+    text-align: center;
+    border-radius: 0px 0px 25px 25px;
+}
+
+.Nav-bar :hover{
+    background-color: aliceblue;
+
+}
+
+.Menu{
+    
+    height: 400px;
+    width: 15%;
+    background-color: #F2E9E4;
+    border: 3px solid #945D5E;
+    margin-left:10px;
+    margin-right: 10px;
+    flex: 1;
+    border-radius: 25px;
+}
+
+.Window{
+    height: 400px;
+    width: 75%;
+    padding-top: 10%;
+    margin-right: 10px;
+    background-color: #F2E9E4;
+    border: 3px solid black;
+    flex: 6;
+    border-radius: 25px;
+   
+}
+
+.List-style{
+    list-style-type: none;
+    padding: 0% 10% 10% 10%;
+    line-height: 250%;
+    
+}
+
+.List-style :hover{
+    background-color: lightyellow;
+    transition: 0.5s;
+    border-radius: 8px;
+}
+
+
+
+.flex-container{
+    display: flex;
+    padding-top: 5%;
+}
