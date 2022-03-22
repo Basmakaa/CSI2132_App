@@ -1,8 +1,11 @@
 <!DOCTYPE html>
-<html>
-	
-	<head>
-		<meta http-equiv="content-type" content="text/html;charset=utf-8">
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Dental DBMS</title>
+    <link rel="stylesheet" href="css\style.css">
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
 		<meta charset="utf-8">
 		<title>DCMS Central Portal</title>
 		<link href="assets/icon.ico" rel="icon">
@@ -11,9 +14,36 @@
 		<script src="js/socket.io.js"></script>
 		<script src="js/jquery-3.6.0.min.js"></script>
 		<script src="js/index.js"></script>
-	</head>
-	
-	<body>
-		
-	</body>
-</html> 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@300;500&display=swap" rel="stylesheet"> 
+  </head>
+  <body>
+    
+    <div class="Nav-bar">
+      <h1>Welcome to the Dental Database Server</h1>
+    </div>
+
+    <div class="flex-container">
+      <div class="Menu">
+        <ul class="List-style">
+          <a href="#"><li>Login</li></a> <!--This needs to be changed upon succesful login, display "Logged in as *INSERT NAME*"-->
+          <a href="#"><li>My Records</li></a>
+          <a href="#"><li>Appointments</li></a>
+          <a href="#"><li>Review</li></a>
+          <a href="#"><li>Invoices</li></a>
+          <a href="#"><li>Insurance</li></a>
+          <a href="#"><li>Billing/Payment</li></a>
+          <a href="#"><li>User Settings</li></a>
+          <a href="#"><li>Manage Users</li></a><!--only visible to employees need to be hidden/disabled-->
+        </ul>
+      </div>
+
+      <div class="Window">
+
+      </div>
+    </div>
+    
+
+  </body>
+</html>
