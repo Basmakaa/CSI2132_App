@@ -62,3 +62,19 @@ body{
     display: flex;
     padding-top: 5%;
 }
+
+.btn-container{
+    margin: 0;
+  position: relative;
+  top: 10%;
+  left: 15%;
+
+}
+.button{
+    background-color: yellow;
+    padding: 15px 32px;
+    text-align: center;
+    font-size: large;
+    display: flex;
+    cursor: pointer;
+}
