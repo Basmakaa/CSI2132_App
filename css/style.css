@@ -63,3 +63,21 @@ body{
     padding-top: 5%;
 }
 
+<<<<<<< HEAD
+=======
+.btn-container{
+    margin: 0;
+  position: relative;
+  top: 10%;
+  left: 15%;
+
+}
+.button{
+    background-color: yellow;
+    padding: 15px 32px;
+    text-align: center;
+    font-size: large;
+    display: flex;
+    cursor: pointer;
+}
+>>>>>>> a143a2d52419ced15f90d0dd74eef7241777fede
