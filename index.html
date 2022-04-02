@@ -1,116 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+	<head>
+		<meta http-equiv="content-type" content="text/html;charset=utf-8">
 		<meta charset="utf-8">
 		<title>DCMS Central Portal</title>
-		<link href="assets/icon.ico" rel="icon">
-		<link href="css/style.css" type="text/css" rel="stylesheet"/>
-    <link href="css/index.css" type="text/css" rel="stylesheet"/>
+		
 		<script src="js/socket.io.js"></script>
 		<script src="js/jquery-3.6.0.min.js"></script>
 		<script src="js/index.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@300;500&display=swap" rel="stylesheet"> 
-  </head>
-  <body>
+		
+		<link href="css/index.css" type="text/css" rel="stylesheet"/>
+		<link href="assets/icon.ico" rel="icon">
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Dosis:wght@300;500&display=swap" rel="stylesheet"> 
+	</head>
 
-    <!-- Register/login code -->
+	<body>
+		<div id="navbar">
+			<h1>Welcome to the Dental Care Server</h1>
+		</div>
+		<div id="flex-container">
+			<div id="menu">
+				<ul id="menulist">
+					<li onclick="swapTo('login', this)" class="active">Login</li>
+					<li onclick="swapTo('register', this)">Register</li>
+					<li hidden>My Records</li>
+					<li hidden>Appointments</li>
+					<li hidden>Review</li>
+					<li hidden>Invoices</li>
+					<li hidden>Insurance</li>
+					<li hidden>Billing/Payment</li>
+					<li hidden>User Settings</li>
+					<li hidden>Manage Users</li>
+				</ul>
+			</div>
+			<div id="main">
+			
+				<section id="login">
+					<label for="lgemail">E-mail Address</label><br>
+					<input type="text" id="lgemail" placeholder="example@mail.com" class="input"><br>
+					
+					<label for="lgpass">Password</label><br>
+					<input type="password" id="lgpass" class="input">
+					<div class="btn" onclick="login()">Sign in</div>
+				</section>
+				
+				<section id="register" hidden>	
+					<label>Full Name</label><br>
+					<input type="text" placeholder="First" class="input small">
+					<input type="text" placeholder="Middle" class="input small">
+					<input type="text" placeholder="Last" class="input small"><br>
+					
+					<label>Date of Birth</label><br>
+					<input type="text" placeholder="01/01/1234" class="input"><br>
+					<label>SSN</label><br>
+					<input type="text" placeholder="012-34-5678" class="input"><br>
+					
+					<label>Address</label><br>
+					<input type="text" placeholder="Street No" class="input small">
+					<input type="text" placeholder="Street" class="input small"><br>
 
-    <div class="wrapper">
-      <div class="container">
-        <div class="tabs">
-          <ul >
-            <li class="sign_in_li">Log in</li>
-            <li class="sign_up_li">Register</li>
-          </ul>
-        </div>
-        <!-- log in input  -->
-        <div class="sign_in">
-        <div class="input_field">
-          <input type="text" placeholder="E-mail" class="input">
-        </div>
-        <div class="input_field">
-          <input type="password" placeholder="Password" class="input">
-        </div>
-        <div class="btn"><a href="#">Sign in</a></div>
-      </div>
-        <!-- log in input ending  -->
-        <!-- Register input  -->
-        <div class="sign_up">
-            <ul>
-              <li class ="input_field">
-              <input type="text" placeholder="First Name" class="input">
-            </li>
-            <li class="input_field">
-              <input type="text" placeholder="Middle Name" class="input">
-            </li>
-            <li class="input_field">
-              <input type="text" placeholder="Last Name" class="input">
-            </li>
-            </ul>  
-          <div class="input_field">
-            <input type="text" placeholder="Date of birth" class="input">
-          </div>
-          <div class="input_field">
-            <input type="text" placeholder="SSN" class="input">
-          </div>
-          <ul>
-            <li class ="input_field">
-            <input type="text" placeholder="Street No" class="input">
-          </li>
-          <li class="input_field">
-            <input type="text" placeholder="Street" class="input">
-          </li>
-          <li class="input_field">
-            <input type="text" placeholder="City" class="input">
-          </li>
-          <li class="input_field">
-            <input type="text" placeholder="Province" class="input">
-          </li>
-          </ul> 
-          <div class="input_field">
-            <input type="text" placeholder="E-mail" class="input">
-          </div>
-          <div class="input_field">
-            <input type="password" placeholder="Password" class="input">
-          </div>
-          <div class="btn"><a href="#">Register</a></div>
-        </div>
-
-        <!-- Register input ending  -->
-      </div>
-    </div>
-  
-    <!-- After login page here... -->
-    <div class="after_login">
-
-    <div class="Nav-bar">
-      <h1>Welcome to the Dental Database Server</h1>
-    </div>
-    <div class="flex-container">
-      <div class="Menu">
-        <ul class="List-style">
-          <!-- <a href="#"><li>Login</li></a> This needs to be changed upon succesful login, display "Logged in as *INSERT NAME*"-->
-          <a href="#"><li>My Records</li></a>
-          <a href="#"><li>Appointments</li></a>
-          <a href="#"><li>Review</li></a>
-          <a href="#"><li>Invoices</li></a>
-          <a href="#"><li>Insurance</li></a>
-          <a href="#"><li>Billing/Payment</li></a>
-          <a href="#"><li>User Settings</li></a>
-          <a href="#"><li>Manage Users</li></a><!--only visible to employees need to be hidden/disabled-->
-        </ul>
-        <div class="btn-container"><button class="button">Submit</button></div>
-      </div>
-      <div class="Window">
-      </div>
-      
-    </div>
-  </div>
-  <!-- after login page ending here... -->
-    
-
-  </body>
+					<input type="text" placeholder="City" class="input small">
+					<input type="text" placeholder="Province" class="input small"><br>
+					
+					<label>E-mail Address</label><br>
+					<input type="text" placeholder="example@mail.com" class="input"><br>
+					<label>Password</label><br>
+					<input type="password"class="input"><br>
+					<label>Confirm Password</label><br>
+					<input type="password" class="input">
+					
+					<br>TODO: PHONE NUMBERS (yes, plural)
+					
+					<div class="btn" onclick="register()">Register</div>
+				</section>
+				
+			</div>
+		</div>
+	</body>
 </html>
