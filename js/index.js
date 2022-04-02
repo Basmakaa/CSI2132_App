@@ -69,11 +69,11 @@ $(document).ready(function() {
     });
 
 
-    socket.on('fetch_dentist_appointments-res', function(data) {
+    socket.on('fetch_dentist_appointments_res', function(data) {
         if(data.status == 'error') console.log(data.reason);
         else{    
             console.log("Dentist appointments fetched.");
-            user_info = data.result;
+            dentist_apps = data.result;
         }
     });
 
