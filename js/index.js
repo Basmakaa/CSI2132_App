@@ -59,4 +59,27 @@ $(document).ready(function() {
 			future_appts = data.result;
 		}
 	});
+
+	socket.on('get_user_info_res', function(data) {
+        if(data.status == 'error') console.log(data.reason);
+        else{    
+            console.log("User info fetched.");
+            user_info = data.result;
+        }
+    });
+
+
+    socket.on('fetch_dentist_appointments-res', function(data) {
+        if(data.status == 'error') console.log(data.reason);
+        else{    
+            console.log("Dentist appointments fetched.");
+            user_info = data.result;
+        }
+    });
+
+
+
+
+
+
 });
