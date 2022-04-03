@@ -1,5 +1,8 @@
 var socket;
 var future_appts;
+var user_info;
+var dentist_apps;
+var phone_counter = 0;
 
 $(document).ready(function() {
 	socket = io.connect('https://csi2132-group12.herokuapp.com/');
@@ -12,7 +15,11 @@ $(document).ready(function() {
 	socket.on('login_res', function(data) {
 		if(data.status == 'error') console.log(data.reason);
 		else{	
-			console.log("Logged in as " + data.name + ".");
+			$("#navbar h1").text("Hello " + data.name + "!");
+			$("#mlogin").hide();
+			$("#mregister").hide();
+			$("#muinfo").show();
+			$("#muinfo").click();
 			
 			//Fetch upcoming appointments.
 			//Note: could be replaced in the future with a general funct. to retrieve all data necessary to be displayed post-login.
@@ -37,6 +44,22 @@ $(document).ready(function() {
 			future_appts = data.result;
 		}
 	});
+	
+	socket.on('get_user_info_res', function(data) {
+        if(data.status == 'error') console.log(data.reason);
+        else{    
+            console.log("User info fetched.");
+            user_info = data.result;
+        }
+    });
+
+    socket.on('fetch_dentist_appointments_res', function(data) {
+        if(data.status == 'error') console.log(data.reason);
+        else{    
+            console.log("Dentist appointments fetched.");
+            dentist_apps = data.result;
+        }
+    });
 });
 
 function swapTo(section, btn){
@@ -46,6 +69,13 @@ function swapTo(section, btn){
 	$(btn).addClass("active");
 }
 
+function addPhone(btn){
+	if(++phone_counter < 4){
+		$(btn).after("<br><input type=\"password\" placeholder=\"123-456-7890\" class=\"input\"> <button class=\"small\" onclick=\"addPhone(this);\">+</button>");
+		if(phone_counter >= 3) $("#register button.small").remove();
+	}
+}
+
 function login(){
 	socket.emit('login', {email: $("#lgemail").val(), password: $("#lgpass").val()});
 }
@@ -53,3 +83,5 @@ function login(){
 function register(){
 	
 }
+
+	

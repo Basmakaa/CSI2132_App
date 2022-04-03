@@ -23,16 +23,16 @@
 		<div id="flex-container">
 			<div id="menu">
 				<ul id="menulist">
-					<li onclick="swapTo('login', this)" class="active">Login</li>
-					<li onclick="swapTo('register', this)">Register</li>
-					<li hidden>My Records</li>
-					<li hidden>Appointments</li>
-					<li hidden>Review</li>
-					<li hidden>Invoices</li>
-					<li hidden>Insurance</li>
-					<li hidden>Billing/Payment</li>
-					<li hidden>User Settings</li>
-					<li hidden>Manage Users</li>
+					<li id="mlogin"    onclick="swapTo('login', this)" class="active">Login</li>
+					<li id="mregister" onclick="swapTo('register', this)">Register</li>
+					<li id="muinfo"    onclick="swapTo('user_info', this)" hidden>User Info</li>
+					<li id="mtodo1" hidden>Appointments</li>
+					<li id="mtodo2" hidden>Review</li>
+					<li id="mtodo3" hidden>Invoices</li>
+					<li id="mtodo4" hidden>Insurance</li>
+					<li id="mtodo5" hidden>Billing/Payment</li>
+					<li id="mtodo6" hidden>User Settings</li>
+					<li id="mtodo7" hidden>Manage Users</li>
 				</ul>
 			</div>
 			<div id="main">
@@ -43,10 +43,13 @@
 					
 					<label for="lgpass">Password</label><br>
 					<input type="password" id="lgpass" class="input">
-					<div class="btn" onclick="login()">Sign in</div>
+					<button onclick="login()">Sign in</button>
 				</section>
 				
 				<section id="register" hidden>	
+					<!-- Reminder: the middle name field can be null!-->
+					<!-- Only optional user data apart from phone numbers -->
+					
 					<label>Full Name</label><br>
 					<input type="text" placeholder="First" class="input small">
 					<input type="text" placeholder="Middle" class="input small">
@@ -69,13 +72,17 @@
 					<label>Password</label><br>
 					<input type="password"class="input"><br>
 					<label>Confirm Password</label><br>
-					<input type="password" class="input">
+					<input type="password" class="input"><br>
 					
-					<br>TODO: PHONE NUMBERS (yes, plural)
+					<label>Phone Numbers (optional)</label><br>
+					<input type="password" placeholder="123-456-7890" class="input"> <button class="small" onclick="addPhone(this);">+</button>
 					
-					<div class="btn" onclick="register()">Register</div>
+					<button onclick="register()">Register</button>
 				</section>
 				
+				<section id="user_info" hidden>
+					todo user info section
+				</section>
 			</div>
 		</div>
 	</body>
