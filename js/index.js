@@ -5,6 +5,10 @@ var dentist_apps;
 var phone_counter = 0;
 
 $(document).ready(function() {
+	//jQuery UI Setup
+	$("#bappt_date").datepicker();
+	
+	//Socket
 	socket = io.connect('https://csi2132-group12.herokuapp.com/');
 		
 	socket.on('connect', function(){
@@ -19,6 +23,7 @@ $(document).ready(function() {
 			$("#mlogin").hide();
 			$("#mregister").hide();
 			$("#muinfo").show();
+			$("#mbappt").show();
 			$("#muinfo").click();
 			
 			//Fetch upcoming appointments.
@@ -84,4 +89,16 @@ function register(){
 	
 }
 
+function book_appt(){
+	var branch = $("#bappt_branch").val();
+	var type = $("#bappt_type").val();
+	var date = Date.parse($("#bappt_date").val() + ' ' + $("#bappt_time").val());
+	var time = $("#bappt_time").val();
 	
+	console.log(branch);
+	console.log(type);
+	console.log(date);
+	console.log(time);
+	
+	console.log(Date.now() < date);
+}
