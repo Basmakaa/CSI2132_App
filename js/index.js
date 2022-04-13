@@ -15,11 +15,13 @@ $(document).ready(function() {
 	socket.on('login_res', function(data) {
 		if(data.status == 'error') console.log(data.reason);
 		else{	
-			$("#navbar h1").text("Hello " + data.name + "!");
+			$("#navbar h1").text("Hello, " + data.name + "!");
 			$("#mlogin").hide();
 			$("#mregister").hide();
 			$("#muinfo").show();
 			$("#muinfo").click();
+			$("#mreview").show();
+			$("#mreview").click();
 			
 			//Fetch upcoming appointments.
 			//Note: could be replaced in the future with a general funct. to retrieve all data necessary to be displayed post-login.
