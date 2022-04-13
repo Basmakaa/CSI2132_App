@@ -38,48 +38,48 @@
 				</ul>
 			</div>
 			<div id="main">
-			
 				<section id="login">
 					<label for="lgemail">E-mail Address</label><br>
 					<input type="text" id="lgemail" placeholder="example@mail.com"><br>
 					
 					<label for="lgpass">Password</label><br>
 					<input type="password" id="lgpass">
-					<button onclick="login()">Sign in</button>
+					<button onclick="LoginformValidation()" onclick="login()">Sign in</button>
 				</section>
 				
-				<section id="register" hidden>	
+				<section name='register' id="register" hidden>	
 					<!-- Reminder: the middle name field can be null!-->
 					<!-- Only optional user data apart from phone numbers -->
 					
-					<label>Full Name</label><br>
-					<input type="text" placeholder="First" class="small">
-					<input type="text" placeholder="Middle" class="small">
-					<input type="text" placeholder="Last" class="small"><br>
-					
-					<label>Date of Birth</label><br>
-					<input type="text" placeholder="01/01/1234"><br>
-					<label>SSN</label><br>
-					<input type="text" placeholder="012-34-5678"><br>
-					
-					<label>Address</label><br>
-					<input type="text" placeholder="Street No" class="small">
-					<input type="text" placeholder="Street" class="small"><br>
+					<label for="rfirstname">Full Name</label><br>
 
-					<input type="text" placeholder="City" class="small">
-					<input type="text" placeholder="Province" class="small"><br>
+					<input type="text" id="rfirstname" placeholder="First" class="small">
+					<input type="text" id="rmiddlename" placeholder="Middle" class="small">
+					<input type="text" id="rlastname" placeholder="Last" class="small"><br>
 					
-					<label>E-mail Address</label><br>
-					<input type="text" placeholder="example@mail.com"><br>
-					<label>Password</label><br>
-					<input type="password"><br>
-					<label>Confirm Password</label><br>
-					<input type="password"><br>
+					<label for="rdateofbirth">Date of Birth</label><br>
+					<input type="text" id="rdateofbirth" placeholder="01/01/1234"><br>
+					<label for="rssn">SSN</label><br>
+					<input type="text" id="rssn" placeholder="012-34-5678"><br>
 					
-					<label>Phone Numbers <i>(optional)</i></label><br>
+					<label for="rstreetn">Address</label><br>
+					<input type="text" id="rstreetn" placeholder="Street No" class="small">
+					<input type="text" id="rstreetname" placeholder="Street" class="small"><br>
+
+					<input type="text" id="rcity" placeholder="City" class="small">
+					<input type="text" id="rprovince" placeholder="Province" class="small"><br>
+					
+					<label for="remail">E-mail Address</label><br>
+					<input type="text" id="remail" placeholder="example@mail.com"><br>
+					<label for="rpass">Password</label><br>
+					<input type="password" id="rpass"><br>
+					<label for="rpassconf">Confirm Password</label><br>
+					<input type="password" id="rpassconf"><br>
+					
+					<label for="rphone">Phone Numbers <i>(optional)</i></label><br>
 					<input type="password" placeholder="123-456-7890"> <button class="small" onclick="addPhone(this);">+</button>
 					
-					<button onclick="register()">Register</button>
+					<button onclick="RegisterformValidation()" >Register</button>
 				</section>
 				
 				<section id="user_info" hidden>
