@@ -1,7 +1,5 @@
 var socket;
-var future_appts;
-var user_info;
-var dentist_apps;
+var logged_in = false;
 var phone_counter = 0;
 
 $(document).ready(function() {
@@ -34,7 +32,7 @@ $(document).ready(function() {
 			var edata = data.employee;
 			
 			$("#navbar h1").text("Hello, " + udata.first_name + " " + udata.last_name + "!" + (edata ? " (" + edata.branch_city + " Branch)" : ""));
-						
+			logged_in = true;			
 			toastNotify("Logged in successfully");
 			$("#muserinfo").show();
 			$("#muserinfo").click();
@@ -111,9 +109,17 @@ $(document).ready(function() {
 		if(data.status == 'error') toastNotify(data.reason);
 		else{	
 			toastNotify("Account registered succesfully");
-			socket.emit('login', {email: data.email, password: data.password});
+			
+			if(!logged_in) socket.emit('login', {email: data.email, password: data.password});
 		}
 	});  
+
+    socket.on('add_user_review_res', function(data) {
+        if(data.status == 'error') console.log(data.reason);
+        else{    
+            console.log("Added user review.");
+        }
+    });
 	
 	//All-purpose event for notifications from the server
 	//(you probably don't want to use this!)
@@ -122,38 +128,11 @@ $(document).ready(function() {
 		toastNotify(data.info);
 	});
 	
-	//Response to upcoming appointments request.
-	socket.on('fetch_future_appointments_res', function(data) {
-		if(data.status == 'error') toastNotify(data.reason);
-		else{	
-			console.log("Upcoming appointments fetched.");
-			console.log(data.result);
-			future_appts = data.result;
-		}
+	//Post-login branch list fetching complete
+	socket.on('fetched_branches', function(data){
+		for(branch of data.res)
+			$("select").append("<option value=\"" + branch.branch_city + "\">" + branch.branch_city + "</option>");
 	});
-	
-	socket.on('get_user_info_res', function(data) {
-        if(data.status == 'error') toastNotify(data.reason);
-        else{    
-            console.log("User info fetched.");
-            user_info = data.result;
-        }
-    });
-
-    socket.on('fetch_dentist_appointments_res', function(data) {
-        if(data.status == 'error') toastNotify(data.reason);
-        else{    
-            console.log("Dentist appointments fetched.");
-            dentist_apps = data.result;
-        }
-    });
-
-    socket.on('add_user_review_res', function(data) {
-        if(data.status == 'error') console.log(data.reason);
-        else{    
-            console.log("Added user review.");
-        }
-    });
 });
 
 function toastNotify(txt){
