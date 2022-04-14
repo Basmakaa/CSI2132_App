@@ -44,7 +44,8 @@ $(document).ready(function() {
 								 + "<b>Email</b>: " + udata.email + "<br>"
 								 + "<b>Address</b>: " + udata.street_number + " " + udata.street + ", " + udata.city + ", " + udata.province + "<br>"
 								 + "<b>SSN</b>: " + udata.ssn + "<br>"
-								 + "<b>Date of Birth</b>: " + udata.date_of_birth.substring(0, 10) + "<br><br>");
+								 + "<b>Date of Birth</b>: " + udata.date_of_birth.substring(0, 10) 
+								 + "<br><br>");
 			
 			if(pdata){
 				$("#user_info").append("<h1>Patient Info</h1>"
@@ -171,7 +172,25 @@ $(document).ready(function() {
 			if(data.res.length > 1) $("#user_info .remover").show();
 			if(data.res.length >= 4) $("#user_info .adder").hide();
 		}
-		$("#user_info").append("<button onclick=\"updatePhones(this)\" >Update</button><br>");
+		$("#user_info").append("<button onclick=\"updatePhones(this)\" >Update</button>");
+	});
+	
+	socket.on('fetched_guardianships', function(data){
+		if(data.res.length > 0){
+			$("#user_info").append("<h1>Guardianships</h1>");
+			for(g of data.res)
+				$("#user_info").append(g.first_name + " " + g.middle_name + " " + g.last_name + " (age " + calcAge(Date.parse(g.date_of_birth)) + ")<br>");
+			$("#user_info").append("<br>");
+		}
+	});
+	
+	socket.on('fetched_records', function(data){
+		console.log(data);
+		if(data.res.length > 0){
+			for(r of data.res)
+				$("#records_table").append("<tr><td><h1>"+r.details+"</h1>— <i>Dr. "+r.last_name+"</i>  ("+r.appointment_type+" Appointment from "+r.date.substring(0, 10)+")</td></tr>");
+		} else 
+			$("#records").append("No appointment records so far.");
 	});
 });
 

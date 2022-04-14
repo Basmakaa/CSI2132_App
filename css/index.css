@@ -154,12 +154,22 @@ label, button, #menulist li{
 	right: 30px;
 }
 
-#invoice_t{
-    width: 100%;
-    border: 1px solid;
+table {
+	margin: 0 auto;
+	width: 80%;
 }
 
-#invoice_t th{
-    padding: 0 10px 0 ;
-    border-bottom: 2px solid;
+tr{
+	border-radius: 5px;
+	border: 2px solid #6461a0;
+	text-align: center;
+	margin: 15px;
 }
+
+tr, td{
+	width: 100%;
+	display: block;
+}
+
+tr:nth-child(even) {background: #dde1e7}
+tr:nth-child(odd) {background: #FFF}
