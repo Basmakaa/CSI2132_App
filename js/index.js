@@ -154,6 +154,19 @@ $(document).ready(function() {
             console.log("Added user review.");
         }
     });
+
+	//Response to invoice request.
+	socket.on('fetch_invoice_res', function(data) {
+		if(data.status == 'error') console.log(data.reason);
+		else{	
+			console.log("invoices fetched.");
+			data.result;
+			for(invoice in data.result){
+				console.log(invoice.Date);
+			}
+		}
+		
+	});
 });
 
 function toastNotify(txt){
@@ -321,5 +334,9 @@ function book_appt(){
 	console.log(Date.now() < date);
 }
 
-
+function invoice(){
+	// console.log("TEEEESSSSTTT");
+	socket.emit('fetch_invoice');
+	
+}
 
