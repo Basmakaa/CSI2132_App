@@ -1,0 +1,165 @@
+body {
+    background-color: #dde1e7;
+    padding: 0;
+    margin: 0;
+    font-family: 'Dosis', sans-serif;
+    
+}
+
+#navbar {
+    background-color: #6461a0;
+    margin: 0px;
+    overflow: hidden;
+    text-align: center;
+    border-radius: 0px 0px 25px 25px;
+	color: white;
+}
+
+#menu {
+    height: 82vh;
+    width: 15%;
+    background-color: #F2E9E4;
+    border: 3px solid #6461a0;
+    margin-left:10px;
+    margin-right: 10px;
+    flex: 1;
+    border-radius: 25px;
+}
+
+#main {
+    height: 80vh;
+    width: 75%;
+    padding-top: 1%;
+    margin-right: 10px;
+    background-color: #F2E9E4;
+    border: 3px solid #6461a0;
+    flex: 6;
+    border-radius: 25px;
+	text-align: center;
+	overflow-y: scroll;
+}
+
+#menulist {
+    list-style-type: none;
+    line-height: 250%;
+	padding-left:0;
+}
+
+#menulist li {
+	padding:6px;
+	margin:2px;
+    border-radius: 8px;
+    transition: .5s;
+	text-align: center;
+	cursor: pointer;
+}
+
+#menulist li:hover {
+    background-color: lightyellow;
+}
+
+#menulist li.active {
+    background-color: #6461a0;
+	color: white;
+	font-weight: bold;
+	cursor: default;
+}
+
+#flex-container{
+    display: flex;
+    padding-top: 2%;
+}
+
+.row{
+	 display: flex;
+}
+
+input, select{
+    display: inline-block;
+	
+    width: 30%;
+    border: none;
+    background: #dde9ecb7;
+    color: black;
+    font-family: sans-serif;
+    border: 2px solid #6461a0;
+    font-size: 14px;
+    padding: 17px;
+    border-radius: 10px;
+	margin: 0 auto 20px auto;
+	text-align: center;
+} 
+
+input.small, select.small{
+	width: 15%;
+}
+
+.ui-datepicker-header select{
+	padding: 2px;
+}	
+
+button{
+    background: #6461a0;
+    width: 20%;
+	display: block;
+   
+    padding: 12px;
+    text-align: center;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: bold;
+    cursor: pointer;
+	
+	color: white;
+    font-size: 16px;
+    font-family: sans-serif;
+	transition: .5s;
+	margin: 30px auto;
+}
+
+button.small{
+	display: inline-block;
+	width: 3%;
+	margin: 0;
+}
+
+button:hover{
+	background: #403E66;
+}
+
+button:disabled, button[disabled]{
+  background-color: #8D8D8D;
+}
+
+label, button, #menulist li{
+	user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+}
+
+#toast {
+	display: none; 
+	min-width: 250px; 
+	background-color: #6461a0; 
+	color: #fff; 
+	text-align: center; 
+	border-radius: 2px; 
+	padding: 16px; 
+	position: fixed; 
+	z-index: 1; 
+	bottom: 30px;
+	right: 30px;
+}
+
+#invoice_t{
+    width: 100%;
+    border: 1px solid;
+}
+
+#invoice_t th{
+    padding: 0 10px 0 ;
+    border-bottom: 2px solid;
+}
