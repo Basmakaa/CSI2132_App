@@ -28,19 +28,65 @@ $(document).ready(function() {
 	socket.on('login_res', function(data) {
 		if(data.status == 'error') toastNotify(data.reason);
 		else{	
-			$("#navbar h1").text("Hello, " + data.name + "!");
+			var udata = data.user;
+			var pdata = data.patient;
+			var edata = data.employee;
+			
+			$("#navbar h1").text("Hello, " + udata.first_name + " " + udata.last_name + "!" + (edata ? " (" + edata.branch_city + " Branch)" : ""));
+						
+			toastNotify("Logged in successfully");
+			$("#muserinfo").show();
+			$("#muserinfo").click();
 			$("#mlogin").hide();
 			$("#mregister").hide();
-			$("#muinfo").show();
-			$("#mbappt").show();
-			$("#muinfo").click();
-			$("#mreview").show();
 			
-			toastNotify("Logged in successfully");
+			if(pdata){
+				
+				$("#mrecords").show();
+				$("#mappts").show();
+				
+				if(calcAge(Date.parse(udata.date_of_birth)) >= 15){
+					$("#mreview").show();
+					$("#mbookappt").show();
+					$("#minvoices").show();
+					$("#minsure").show();
+				}
+			} 
+
+			if(edata){
+				switch(edata.employee_type){
+					case "dentist":
+						$("#mappts").show();
+						$("#mpatients").show();
+						$("#mtreatmnt").show();
+						break;
+						
+					case "hygienist":
+						$("#mpatients").show();
+						$("#mtreatmnt").show();
+						break;
+						
+					case "receptionist":
+						$("#mpatients").show();
+						$("#mschdappt").show();
+						$("#mbookappt").show();
+						$("#mtreatmnt").show();
+						$("#mcharges").show();
+						$("#mregister").show();
+						break;
+						
+					case "branch manager":
+						$("#memployees").show();
+						$("#mcharges").show();
+						$("#mregister").show();
+						break;
+				}
+			}
 			
-			//Fetch upcoming appointments.
-			//Note: could be replaced in the future with a general funct. to retrieve all data necessary to be displayed post-login.
-			socket.emit('fetch_future_appointments');
+			if(udata.user_id < 0){
+				$("#mregister").show();
+				//todo
+			}
 		}
 	});
 	
@@ -111,6 +157,10 @@ function registerUserTypeUpdate(){
 	else $("#rpatientinfo").hide();
 }
 
+function calcAge(date){
+	return new Date(Date.now() - date).getUTCFullYear() - 1970;
+}
+
 function addPhone(btn){
 	if(++phone_counter < 4){
 		$(btn).after("<br><input type=\"text\" placeholder=\"123-456-7890\" class=\"phone\"> <button class=\"small\" onclick=\"addPhone(this);\">+</button>");
@@ -147,6 +197,7 @@ function valAlpha(name){
 }
 
 function login(){
+	toastNotify("Please wait...");
 	var lgemail = $("#lgemail");
 	var lgpass = $("#lgpass");
 	
@@ -171,7 +222,7 @@ function register(){
 	var rinsurance = $("#rinsurance");
 	var rgender = $("#rgender").val();
 
-	if(rtype == "patient" && (new Date(Date.now() - Date.parse(rdateofbirth.val())).getUTCFullYear() - 1970) < 15){
+	if(rtype == "patient" && calcAge(Date.parse(rdateofbirth.val())) < 15){
 		toastNotify('Registering for users under 15 is a WIP feature.');
 		rdateofbirth.focus(); //TODO: change this the guardian SSN thing
 		return;
