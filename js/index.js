@@ -156,17 +156,17 @@ $(document).ready(function() {
     });
 
 	//Response to invoice request.
-	socket.on('fetch_invoice_res', function(data) {
-		if(data.status == 'error') console.log(data.reason);
-		else{	
-			console.log("invoices fetched.");
-			data.result;
-			for(invoice in data.result){
-				console.log(invoice.Date);
-			}
-		}
+	// socket.on('fetch_invoice_res', function(data) {
+	// 	if(data.status == 'error') console.log(data.reason);
+	// 	else{	
+	// 		console.log("invoices fetched.");
+	// 		data.result;
+	// 		for(invoice in data.result){
+	// 			console.log(invoice.Date);
+	// 		}
+	// 	}
 		
-	});
+	// });
 });
 
 function toastNotify(txt){
