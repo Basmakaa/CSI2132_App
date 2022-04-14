@@ -153,3 +153,13 @@ label, button, #menulist li{
 	bottom: 30px;
 	right: 30px;
 }
+
+#invoice_t{
+    width: 100%;
+    border: 1px solid;
+}
+
+#invoice_t th{
+    padding: 0 10px 0 ;
+    border-bottom: 2px solid;
+}
