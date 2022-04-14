@@ -74,7 +74,6 @@ body {
 	 display: flex;
 }
 
-
 input, select{
     display: inline-block;
 	
@@ -91,9 +90,13 @@ input, select{
 	text-align: center;
 } 
 
-input.small{
+input.small, select.small{
 	width: 15%;
 }
+
+.ui-datepicker-header select{
+	padding: 2px;
+}	
 
 button{
     background: #6461a0;
@@ -131,4 +134,18 @@ label, button, #menulist li{
     -khtml-user-select: none;
     -webkit-user-select: none;
     -o-user-select: none;
+}
+
+#toast {
+	display: none; 
+	min-width: 250px; 
+	background-color: #6461a0; 
+	color: #fff; 
+	text-align: center; 
+	border-radius: 2px; 
+	padding: 16px; 
+	position: fixed; 
+	z-index: 1; 
+	bottom: 30px;
+	right: 30px;
 }

@@ -29,12 +29,6 @@
 					<li id="mregister" onclick="swapTo('register', this)">Register</li>
 					<li id="muinfo"    onclick="swapTo('user_info', this)" hidden>User Info</li>
 					<li id="mbappt"    onclick="swapTo('book_appt', this)" hidden>Book Appointments</li>
-					<li id="mtodo2" hidden>Review</li>
-					<li id="mtodo3" hidden>Invoices</li>
-					<li id="mtodo4" hidden>Insurance</li>
-					<li id="mtodo5" hidden>Billing/Payment</li>
-					<li id="mtodo6" hidden>User Settings</li>
-					<li id="mtodo7" hidden>Manage Users</li>
 				</ul>
 			</div>
 			<div id="main">
@@ -44,12 +38,18 @@
 					
 					<label for="lgpass">Password</label><br>
 					<input type="password" id="lgpass">
-					<button onclick="LoginformValidation()" onclick="login()">Sign in</button>
+					<button onclick="login()">Sign in</button>
 				</section>
 				
 				<section name='register' id="register" hidden>	
 					<!-- Reminder: the middle name field can be null!-->
 					<!-- Only optional user data apart from phone numbers -->
+					
+					<label>User Type</label><br>
+					<select id="rtype" class="small">
+					  <option value="user">User</option>
+					  <option selected value="patient">Patient</option>
+					</select><br>
 					
 					<label for="rfirstname">Full Name</label><br>
 
@@ -58,12 +58,12 @@
 					<input type="text" id="rlastname" placeholder="Last" class="small"><br>
 					
 					<label for="rdateofbirth">Date of Birth</label><br>
-					<input type="text" id="rdateofbirth" placeholder="01/01/1234"><br>
+					<input type="text" id="rdateofbirth" placeholder="mm/dd/yyyy"><br>
 					<label for="rssn">SSN</label><br>
 					<input type="text" id="rssn" placeholder="012-34-5678"><br>
 					
 					<label for="rstreetn">Address</label><br>
-					<input type="text" id="rstreetn" placeholder="Street No" class="small">
+					<input type="number" min="0" id="rstreetn" placeholder="Street No" class="small">
 					<input type="text" id="rstreetname" placeholder="Street" class="small"><br>
 
 					<input type="text" id="rcity" placeholder="City" class="small">
@@ -77,9 +77,9 @@
 					<input type="password" id="rpassconf"><br>
 					
 					<label for="rphone">Phone Numbers <i>(optional)</i></label><br>
-					<input type="password" placeholder="123-456-7890"> <button class="small" onclick="addPhone(this);">+</button>
+					<input type="text" placeholder="123-456-7890" class="phone"> <button class="small" onclick="addPhone(this);">+</button>
 					
-					<button onclick="RegisterformValidation()" >Register</button>
+					<button onclick="register()" >Register</button>
 				</section>
 				
 				<section id="user_info" hidden>
@@ -105,6 +105,7 @@
 					<button onclick="book_appt()">Book</button>
 				</section>
 			</div>
+			<div id="toast">Text</div>
 		</div>
 	</body>
 </html>
