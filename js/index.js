@@ -113,13 +113,33 @@ $(document).ready(function() {
 			if(!logged_in) socket.emit('login', {email: data.email, password: data.password});
 		}
 	});  
+	
+	//Response from Phone list update attempts
+	socket.on('update_phones_res', function(data) {
+		$("#user_info button").prop("disabled", false);
+		if(data.status == 'error') toastNotify(data.reason);
+		else toastNotify("Phone list updated succesfully");	
+	});  
 
     socket.on('add_user_review_res', function(data) {
         if(data.status == 'error') console.log(data.reason);
         else{    
-            console.log("Added user review.");
+            toastNotify("Added user review.");
         }
     });
+	
+	//Response to invoice request.
+	// socket.on('fetch_invoice_res', function(data) {
+	// 	if(data.status == 'error') console.log(data.reason);
+	// 	else{	
+	// 		console.log("invoices fetched.");
+	// 		data.result;
+	// 		for(invoice in data.result){
+	// 			console.log(invoice.Date);
+	// 		}
+	// 	}
+		
+	// });
 	
 	//All-purpose event for notifications from the server
 	//(you probably don't want to use this!)
@@ -137,12 +157,21 @@ $(document).ready(function() {
 	//Post-login phone number list fetching complete
 	socket.on('fetched_phone_numbers', function(data){
 		$("#user_info").append("<h1>Phone Numbers</h1>");
-		for(number of data.res)
-			$("#user_info").append("<input type=\"text\" placeholder=\"123-456-7890\" value=\""+ number.phone_number +"\">");
-			if(data.res.length < 4) $("#user_info").append("<button class=\"small\" onclick=\"addPhone(this, 'user_info');\">+</button>"); 
-			if(data.res.length > 1) $("#user_info").append("<button class=\"small\" onclick=\"removePhone(this, 'user_info');\">-</button>"); 
-			$("#user_info").append("<br>");
-		$("#user_info").append("<button onclick=\"updatePhones()\" >Update</button><br>");
+		if(data.res.length == 0){
+			$("#user_info").append("<input type=\"text\" placeholder=\"123-456-7890\" class=\"phone\">"
+									 + "<button class=\"small adder\" onclick=\"addPhone(this, 'user_info');\">+</button>"
+									 + "<button class=\"small remover\" onclick=\"removePhone(this, 'user_info');\"  style=\"display:none\">-</button>"
+									 + "<br>");
+		} else {
+			for(number of data.res)
+				$("#user_info").append("<input type=\"text\" placeholder=\"123-456-7890\" class=\"phone\" value=\""+ number.phone_number +"\">"
+									 + "<button class=\"small adder\" onclick=\"addPhone(this, 'user_info');\">+</button>"
+									 + "<button class=\"small remover\" onclick=\"removePhone(this, 'user_info');\"  style=\"display:none\">-</button>"
+									 + "<br>");
+			if(data.res.length > 1) $("#user_info .remover").show();
+			if(data.res.length >= 4) $("#user_info .adder").hide();
+		}
+		$("#user_info").append("<button onclick=\"updatePhones(this)\" >Update</button><br>");
 	});
 });
 
@@ -188,6 +217,36 @@ function removePhone(btn, section){
 		
 		if($("#" + section + " .phone").length <= 1) $("#" + section + " .remover").hide();
 	} 
+}
+
+function valCollectPhones(section){
+	//validates each phone number
+	var failed = false;
+	$("#"+section+" .phone").each(function(){
+		if($(this).val() != "" && !$(this).val().match(/^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/)){
+			toastNotify("Invalid phone number");
+			$(this).focus();
+			failed = true; //can't return here, we're inside an anonymous funct.
+		}
+	}); if(failed) return null;
+	
+	//put each value in an array & return it
+	rphones = $("#"+section+" .phone").map(function(){
+		return $(this).val() == "" ? null : $(this).val();
+	}).get();
+	
+	console.log(rphones);
+	return rphones;
+}
+
+function updatePhones(btn){
+	var rphones = valCollectPhones("user_info");
+	console.log(rphones);
+	if(rphones != null){
+		socket.emit('update_phones', {phones: rphones});
+		toastNotify("Please wait...");
+		$(btn).prop("disabled", true);
+	}
 }
 
 function valEmail(email){
@@ -279,24 +338,11 @@ function register(){
 		}
 	}
 	
-	//validates each phone number
-	var failed = false;
-	$("#register .phone").each(function(){
-		if($(this).val() != "" && !$(this).val().match(/^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/)){
-			toastNotify("Invalid phone number");
-			$(this).focus();
-			failed = true; //can't return here, we're inside an anonymous funct.
-		}
-	}); if(failed) return;
-	
-	//put each value in an array
-	var rphones = $("#register .phone").map(function(){
-		return $(this).val() == "" ? null : $(this).val();
-	}).get();
+	var rphones = valCollectPhones('register');
 
 	if(valAlpha(rfirstname) && valAlpha(rlastname) && (rmiddlename.val() == "" || valAlpha(rmiddlename)) 
 		&& valAlpha(rstreetname) && valAlpha(rcity) && valAlpha(rprovince)
-		&& valEmail(remail) && valPassword(rpass)){
+		&& valEmail(remail) && valPassword(rpass) && rphones != null){
 		socket.emit('register', {type: rtype, fname: rfirstname.val(), mname: rmiddlename.val(), lname: rlastname.val(), 
 								 dob: rdateofbirth.val(), ssn: rssn.val(), streetn: rstreetn.val(), street: rstreetname.val(), 
 								 city: rcity.val(), prov: rprovince.val(), email: remail.val(), password: rpass.val(), phones: rphones,
@@ -327,5 +373,7 @@ function book_appt(){
 	console.log(Date.now() < date);
 }
 
-
-
+function invoice(){
+	// console.log("TEEEESSSSTTT");
+	socket.emit('fetch_invoice');
+}
