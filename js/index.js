@@ -15,6 +15,8 @@ $(document).ready(function() {
         minDate: new Date()
     });
 	
+	registerUserTypeUpdate();
+	
 	//Socket
 	socket = io.connect('https://csi2132-group12.herokuapp.com/');
 		
@@ -26,12 +28,13 @@ $(document).ready(function() {
 	socket.on('login_res', function(data) {
 		if(data.status == 'error') toastNotify(data.reason);
 		else{	
-			$("#navbar h1").text("Hello " + data.name + "!");
+			$("#navbar h1").text("Hello, " + data.name + "!");
 			$("#mlogin").hide();
 			$("#mregister").hide();
 			$("#muinfo").show();
 			$("#mbappt").show();
 			$("#muinfo").click();
+			$("#mreview").show();
 			
 			toastNotify("Logged in successfully");
 			
@@ -46,15 +49,23 @@ $(document).ready(function() {
 		if(data.status == 'error') toastNotify(data.reason);
 		else{	
 			toastNotify("Account registered succesfully");
-			socket.emit('login_res');
+			socket.emit('login', {email: data.email, password: data.password});
 		}
 	});  
+	
+	//All-purpose event for notifications from the server
+	//(you probably don't want to use this!)
+	socket.on('inform', function(data){
+		console.log(data.info);
+		toastNotify(data.info);
+	});
 	
 	//Response to upcoming appointments request.
 	socket.on('fetch_future_appointments_res', function(data) {
 		if(data.status == 'error') toastNotify(data.reason);
 		else{	
 			console.log("Upcoming appointments fetched.");
+			console.log(data.result);
 			future_appts = data.result;
 		}
 	});
@@ -74,6 +85,13 @@ $(document).ready(function() {
             dentist_apps = data.result;
         }
     });
+
+    socket.on('add_user_review_res', function(data) {
+        if(data.status == 'error') console.log(data.reason);
+        else{    
+            console.log("Added user review.");
+        }
+    });
 });
 
 function toastNotify(txt){
@@ -88,6 +106,11 @@ function swapTo(section, btn){
 	$(btn).addClass("active");
 }
 
+function registerUserTypeUpdate(){
+	if($("#rtype").val() == "patient") $("#rpatientinfo").show();
+	else $("#rpatientinfo").hide();
+}
+
 function addPhone(btn){
 	if(++phone_counter < 4){
 		$(btn).after("<br><input type=\"text\" placeholder=\"123-456-7890\" class=\"phone\"> <button class=\"small\" onclick=\"addPhone(this);\">+</button>");
@@ -98,7 +121,7 @@ function addPhone(btn){
 function valEmail(email){
 	if($(email).val().match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/))
 		return true;
-	
+
 	toastNotify("Invalid email address");
 	email.focus();
 	return false;
@@ -145,10 +168,12 @@ function register(){
 	var remail = $("#remail");
 	var rpass = $("#rpass");
 	var rpassconf = $("#rpassconf");
+	var rinsurance = $("#rinsurance");
+	var rgender = $("#rgender").val();
 
 	if(rtype == "patient" && (new Date(Date.now() - Date.parse(rdateofbirth.val())).getUTCFullYear() - 1970) < 15){
 		toastNotify('Registering for users under 15 is a WIP feature.');
-		rdateofbirth.focus(); //TODO: change this  the guardian SSN thing
+		rdateofbirth.focus(); //TODO: change this the guardian SSN thing
 		return;
 	}
 	
@@ -168,6 +193,15 @@ function register(){
 		toastNotify('Passwords do not match');
 		rpassconf.focus();
 		return;
+	}
+	
+	//patient-specific validation
+	if(rtype == "patient"){
+		if(!rinsurance.val().match(/^[A-Za-z0-9\s]+$/)){
+			toastNotify('No special characters expected.');
+			rinsurance.focus();
+			return;
+		}
 	}
 	
 	//validates each phone number
@@ -190,8 +224,18 @@ function register(){
 		&& valEmail(remail) && valPassword(rpass)){
 		socket.emit('register', {type: rtype, fname: rfirstname.val(), mname: rmiddlename.val(), lname: rlastname.val(), 
 								 dob: rdateofbirth.val(), ssn: rssn.val(), streetn: rstreetn.val(), street: rstreetname.val(), 
-								 city: rcity.val(), prov: rprovince.val(), email: remail.val(), password: rpass.val(), phones: rphones});
+								 city: rcity.val(), prov: rprovince.val(), email: remail.val(), password: rpass.val(), phones: rphones,
+								 insur: rinsurance.val(), gender: rgender});
 	}
+}
+
+function sendReview () {
+	socket.emit('add_user_review', {professionalism: $("#review_prof").val()/100, //known issue: divisions become 0 instead of null when the initial value is null
+								    communication: $("#review_comm").val()/100, 
+									cleanliness: $("#review_clea").val()/100, 
+									overall: $("#review_over").val()/100, 
+									branch: $("#review_branch").val(), 
+									comments: $("#review_comment").val()})
 }
 
 function book_appt(){
@@ -207,3 +251,6 @@ function book_appt(){
 	
 	console.log(Date.now() < date);
 }
+
+
+

@@ -28,6 +28,7 @@
 					<li id="mlogin"    onclick="swapTo('login', this)" class="active">Login</li>
 					<li id="mregister" onclick="swapTo('register', this)">Register</li>
 					<li id="muinfo"    onclick="swapTo('user_info', this)" hidden>User Info</li>
+					<li id="mreview"   onclick="swapTo('review', this)" hidden>Reviews</li>
 					<li id="mbappt"    onclick="swapTo('book_appt', this)" hidden>Book Appointments</li>
 				</ul>
 			</div>
@@ -46,7 +47,7 @@
 					<!-- Only optional user data apart from phone numbers -->
 					
 					<label>User Type</label><br>
-					<select id="rtype" class="small">
+					<select id="rtype" class="small" onchange="registerUserTypeUpdate()">
 					  <option value="user">User</option>
 					  <option selected value="patient">Patient</option>
 					</select><br>
@@ -59,11 +60,23 @@
 					
 					<label for="rdateofbirth">Date of Birth</label><br>
 					<input type="text" id="rdateofbirth" placeholder="mm/dd/yyyy"><br>
+					
+					<div id="rpatientinfo" hidden>
+						<label for="rgender">Gender</label><br>
+						<select id="rgender" class="small">
+						  <option selected value="Male">Male</option>
+						  <option value="Female">Female</option>
+						</select><br>
+						
+						<label for="rinsurance">Insurance Provider</label><br>
+						<input type="text" id="rinsurance" placeholder="Your Insurer Here"><br>
+					</div>
+					
 					<label for="rssn">SSN</label><br>
 					<input type="text" id="rssn" placeholder="012-34-5678"><br>
 					
 					<label for="rstreetn">Address</label><br>
-					<input type="number" min="0" id="rstreetn" placeholder="Street No" class="small">
+					<input type="number" min="0" max="32767" id="rstreetn" placeholder="Street No" class="small">
 					<input type="text" id="rstreetname" placeholder="Street" class="small"><br>
 
 					<input type="text" id="rcity" placeholder="City" class="small">
@@ -85,6 +98,21 @@
 				<section id="user_info" hidden>
 					todo user info section
 				</section>
+
+				<section id="review" hidden>
+					Please leave us a review!<br><br>
+					<input type="text" id="review_prof" placeholder="Professionalism (0-100)" class="small">
+					<input type="text" id="review_comm" placeholder="Communication (0-100)" class="small">
+					<input type="text" id="review_clea" placeholder="Cleanliness (0-100)" class="small">
+					<input type="text" id="review_over" placeholder="Overall (0-100)" class="small">
+					<br>
+					<input type="text" id="review_branch" placeholder="City" class="small">
+					<br>
+					<textarea id="review_comment" name="review" placeholder="Extra comments" rows="9" cols="100"></textarea>
+					<br>
+					<button onclick="sendReview(this)"> Post Review</button>
+				</section>
+
 				
 				<section id="book_appt" hidden>
 					<label>Branch</label><br>
