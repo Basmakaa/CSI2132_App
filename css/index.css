@@ -75,7 +75,7 @@ body {
 }
 
 
-.input{
+input, select{
     display: inline-block;
 	
     width: 30%;
@@ -91,7 +91,7 @@ body {
 	text-align: center;
 } 
 
-.input.small{
+input.small{
 	width: 15%;
 }
 
