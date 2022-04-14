@@ -26,6 +26,7 @@ $(document).ready(function() {
 
 	//Response from login attempts
 	socket.on('login_res', function(data) {
+		$("#lgbtn").prop("disabled", false);
 		if(data.status == 'error') toastNotify(data.reason);
 		else{	
 			var udata = data.user;
@@ -40,7 +41,17 @@ $(document).ready(function() {
 			$("#mlogin").hide();
 			$("#mregister").hide();
 			
+			$("#user_info").append("<h1>User Info</h1>"
+							     + "<b>Name</b>: " + udata.first_name + " " + udata.middle_name + " " + udata.last_name + "<br>"
+								 + "<b>Email</b>: " + udata.email + "<br>"
+								 + "<b>Address</b>: " + udata.street_number + " " + udata.street + ", " + udata.city + ", " + udata.province + "<br>"
+								 + "<b>SSN</b>: " + udata.ssn + "<br>"
+								 + "<b>Date of Birth</b>: " + udata.date_of_birth.substring(0, 10) + "<br><br>");
+			
 			if(pdata){
+				$("#user_info").append("<h1>Patient Info</h1>"
+							     + "<b>Gender</b>: " + pdata.gender + "<br>"
+								 + "<b>Insurance Provider</b>: " + pdata.insurance_provider + "<br><br>");
 				
 				$("#mrecords").show();
 				$("#mappts").show();
@@ -54,6 +65,11 @@ $(document).ready(function() {
 			} 
 
 			if(edata){
+				$("#user_info").append("<h1>Employee Info</h1>"
+							     + "<b>Job</b>: " + edata.employee_type.charAt(0).toUpperCase() + edata.employee_type.slice(1) + "<br>"
+								 + "<b>Salary</b>: " + edata.salary + "$<br>"
+								 + "<b>Branch</b>: " + edata.branch_city + " Office<br><br>");
+								 
 				switch(edata.employee_type){
 					case "dentist":
 						$("#mappts").show();
@@ -201,8 +217,10 @@ function login(){
 	var lgemail = $("#lgemail");
 	var lgpass = $("#lgpass");
 	
-	if(valEmail(lgemail) && valPassword(lgpass))
+	if(valEmail(lgemail) && valPassword(lgpass)){
+		$("#lgbtn").prop("disabled", true);
 		socket.emit('login', {email: lgemail.val(), password: lgpass.val()});
+	}		
 }
 
 function register(){

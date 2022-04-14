@@ -128,6 +128,10 @@ button:hover{
 	background: #403E66;
 }
 
+button:disabled, button[disabled]{
+  background-color: #8D8D8D;
+}
+
 label, button, #menulist li{
 	user-select: none;
     -moz-user-select: none;
