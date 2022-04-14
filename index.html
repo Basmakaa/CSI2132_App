@@ -99,7 +99,9 @@
 					<input type="password" id="rpassconf"><br>
 					
 					<label for="rphone">Phone Numbers <i>(optional)</i></label><br>
-					<input type="text" placeholder="123-456-7890" class="phone"> <button class="small" onclick="addPhone(this);">+</button>
+					<input type="text" placeholder="123-456-7890" class="phone"> 
+					<button class="small adder" onclick="addPhone(this, 'register');">+</button>
+					<button class="small remover" onclick="removePhone(this, 'register');" style="display:none">-</button>
 					
 					<button onclick="register()" >Register</button>
 				</section>

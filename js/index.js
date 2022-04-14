@@ -1,6 +1,5 @@
 var socket;
 var logged_in = false;
-var phone_counter = 0;
 
 $(document).ready(function() {
 	//jQuery UI Setup
@@ -10,7 +9,8 @@ $(document).ready(function() {
 		changeYear: true
     });
 	$("#bappt_date").datepicker({
-        minDate: new Date()
+        minDate: new Date(),
+		changeMonth: true
     });
 	
 	registerUserTypeUpdate();
@@ -133,6 +133,17 @@ $(document).ready(function() {
 		for(branch of data.res)
 			$("select").append("<option value=\"" + branch.branch_city + "\">" + branch.branch_city + "</option>");
 	});
+	
+	//Post-login phone number list fetching complete
+	socket.on('fetched_phone_numbers', function(data){
+		$("#user_info").append("<h1>Phone Numbers</h1>");
+		for(number of data.res)
+			$("#user_info").append("<input type=\"text\" placeholder=\"123-456-7890\" value=\""+ number.phone_number +"\">");
+			if(data.res.length < 4) $("#user_info").append("<button class=\"small\" onclick=\"addPhone(this, 'user_info');\">+</button>"); 
+			if(data.res.length > 1) $("#user_info").append("<button class=\"small\" onclick=\"removePhone(this, 'user_info');\">-</button>"); 
+			$("#user_info").append("<br>");
+		$("#user_info").append("<button onclick=\"updatePhones()\" >Update</button><br>");
+	});
 });
 
 function toastNotify(txt){
@@ -156,11 +167,27 @@ function calcAge(date){
 	return new Date(Date.now() - date).getUTCFullYear() - 1970;
 }
 
-function addPhone(btn){
-	if(++phone_counter < 4){
-		$(btn).after("<br><input type=\"text\" placeholder=\"123-456-7890\" class=\"phone\"> <button class=\"small\" onclick=\"addPhone(this);\">+</button>");
-		if(phone_counter >= 3) $("#register button.small").remove();
+function addPhone(btn, section){
+	if($("#" + section + " .phone").length < 4){
+		$("#" + section + " .remover").show();
+		$(btn).next().after("<br><input type=\"text\" placeholder=\"123-456-7890\" class=\"phone\">"
+		                   +"<button class=\"small adder\" onclick=\"addPhone(this, '" + section + "');\">+</button>"
+		                   +"<button class=\"small remover\" onclick=\"removePhone(this, '" + section + "');\">-</button>");
+						   
+		if($("#" + section + " .phone").length >= 4) $("#" + section + " .adder").hide();
 	}
+}
+
+function removePhone(btn, section){
+	if($("#" + section + " .phone").length > 1){
+		$("#" + section + " .adder").show();
+		$(btn).prev().prev().prev().remove();
+		$(btn).prev().prev().remove();
+		$(btn).prev().remove();
+		$(btn).remove();
+		
+		if($("#" + section + " .phone").length <= 1) $("#" + section + " .remover").hide();
+	} 
 }
 
 function valEmail(email){
@@ -203,21 +230,21 @@ function login(){
 }
 
 function register(){
-	var rtype = $("#rtype").val();
-	var rfirstname = $("#rfirstname");
-	var rmiddlename = $("#rmiddlename");
-	var rlastname = $("#rlastname");
+	var rtype =        $("#rtype").val();
+	var rfirstname =   $("#rfirstname");
+	var rmiddlename =  $("#rmiddlename");
+	var rlastname =    $("#rlastname");
 	var rdateofbirth = $("#rdateofbirth");
-	var rssn = $("#rssn");
-	var rstreetn = $("#rstreetn");
-	var rstreetname = $("#rstreetname");
-	var rcity = $("#rcity");
-	var rprovince = $("#rprovince");
-	var remail = $("#remail");
-	var rpass = $("#rpass");
-	var rpassconf = $("#rpassconf");
-	var rinsurance = $("#rinsurance");
-	var rgender = $("#rgender").val();
+	var rssn =         $("#rssn");
+	var rstreetn =     $("#rstreetn");
+	var rstreetname =  $("#rstreetname");
+	var rcity =        $("#rcity");
+	var rprovince =    $("#rprovince");
+	var remail =       $("#remail");
+	var rpass =        $("#rpass");
+	var rpassconf =    $("#rpassconf");
+	var rinsurance =   $("#rinsurance");
+	var rgender =      $("#rgender").val();
 
 	if(rtype == "patient" && calcAge(Date.parse(rdateofbirth.val())) < 15){
 		toastNotify('Registering for users under 15 is a WIP feature.');
@@ -254,7 +281,7 @@ function register(){
 	
 	//validates each phone number
 	var failed = false;
-	$(".phone").each(function(){
+	$("#register .phone").each(function(){
 		if($(this).val() != "" && !$(this).val().match(/^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/)){
 			toastNotify("Invalid phone number");
 			$(this).focus();
@@ -263,7 +290,7 @@ function register(){
 	}); if(failed) return;
 	
 	//put each value in an array
-	var rphones = $(".phone").map(function(){
+	var rphones = $("#register .phone").map(function(){
 		return $(this).val() == "" ? null : $(this).val();
 	}).get();
 
@@ -278,8 +305,8 @@ function register(){
 }
 
 function sendReview () {
-	socket.emit('add_user_review', {professionalism: $("#review_prof").val()/100, //known issue: divisions become 0 instead of null when the initial value is null
-								    communication: $("#review_comm").val()/100, 
+	socket.emit('add_user_review', {professionalism: $("#review_prof").val()/100, //known issue: divisions become 0 instead 
+								    communication: $("#review_comm").val()/100,   //of null when the initial value is null
 									cleanliness: $("#review_clea").val()/100, 
 									overall: $("#review_over").val()/100, 
 									branch: $("#review_branch").val(), 
