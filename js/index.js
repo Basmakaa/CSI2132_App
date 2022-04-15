@@ -149,7 +149,7 @@ $(document).ready(function() {
 	//Post-login branch list fetching complete
 	socket.on('fetched_branches', function(data){
 		for(branch of data.res)
-			$("select").append("<option value=\"" + branch.branch_city + "\">" + branch.branch_city + "</option>");
+			$("select.branch").append("<option value=\"" + branch.branch_city + "\">" + branch.branch_city + "</option>");
 	});
 	
 	//Post-login phone number list fetching complete
