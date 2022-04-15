@@ -403,6 +403,12 @@ function register(){
 		return;
 	}
 	
+	if(!rstreetname.val().match(/^[A-Za-z\s]+$/)){
+		toastNotify('No numbers or special characters expected.');
+		rstreetname.focus();
+		return;
+	}
+	
 	//patient-specific validation
 	if(rtype == "patient"){
 		if(!rinsurance.val().match(/^[A-Za-z0-9\s]+$/)){
@@ -411,11 +417,11 @@ function register(){
 			return;
 		}
 	}
-	
+		
 	var rphones = valCollectPhones('register');
 
 	if(valAlpha(rfirstname) && valAlpha(rlastname) && (rmiddlename.val() == "" || valAlpha(rmiddlename)) 
-		&& valAlpha(rstreetname) && valAlpha(rcity) && valAlpha(rprovince) 
+		&& valAlpha(rcity) && valAlpha(rprovince) 
 		&& valEmail(remail) && valPassword(rpass) && rphones != null){
 		socket.emit('register', {type: rtype, fname: rfirstname.val(), mname: rmiddlename.val(), lname: rlastname.val(), 
 								 dob: rdateofbirth.val(), ssn: rssn.val(), streetn: rstreetn.val(), street: rstreetname.val(), 
