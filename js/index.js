@@ -9,7 +9,7 @@ $(document).ready(function() {
 		changeYear: true
     });
 	$("#bappt_date").datepicker({
-        minDate: new Date(),
+        minDate: new Date(new Date().setDate(new Date().getDate() + 2)),
 		changeMonth: true
     });
 	
@@ -126,12 +126,16 @@ $(document).ready(function() {
 		if(data.status == 'error') toastNotify(data.reason);
 		else toastNotify("Phone list updated succesfully");	
 	});  
+	
+	socket.on('book_appt_res', function(data) {
+        if(data.status == 'error') toastNotify(data.reason);
+        else toastNotify("Appointment booked");
+    });
 
     socket.on('add_user_review_res', function(data) {
         if(data.status == 'error') console.log(data.reason);
-        else{    
-            toastNotify("Added user review.");
-        }
+        else toastNotify("Added user review");
+        
     });
 	
 	//Response to invoice request.
@@ -197,22 +201,38 @@ $(document).ready(function() {
 	});
 	
 	socket.on('fetched_patient_appts', function(data){
-		var upcoming = data.res.filter(appt => Date.now() - Date.parse(appt.date.substring(0, 10) + " " + appt.start_time) < 0);
+		var upcoming = data.res.filter(appt => appt.date != null && Date.now() - Date.parse(appt.date.substring(0, 10) + " " + appt.start_time) < 0);
+		var unscheduled = data.res.filter(appt => appt.date == null);
+		var past = data.res.filter(appt => appt.date != null && Date.now() - Date.parse(appt.date.substring(0, 10) + " " + appt.start_time) >= 0);
+
 		if(upcoming.length > 0){
 			$("#appts_text").remove();
-			$("#appts").append("<h1>Upcoming Appointments</h1>");
+			$("#appts_upcoming_text").remove();
+			$("#appts_upcoming").remove();
+			$("#appts").append("<h1 id=\"appts_upcoming_text\">Upcoming Appointments</h1>");
 			$("#appts").append("<table id=\"appts_upcoming\"></table>");
 			for(appt of upcoming)
-				$("#appts_upcoming").append("<tr><td><h1>"+appt.date.substring(0, 10)+" ("+appt.start_time.substring(0, 5)+"-"+appt.end_time.substring(0, 5)+")</h1>"+appt.appointment_type+" with Dr. "+appt.last_name+" <i>(room "+appt.room+")</i><br>"+fixCaps(appt.status)+"</td></tr>");
+				$("#appts_upcoming").append("<tr><td><h1>"+appt.date.substring(0, 10)+" ("+appt.start_time.substring(0, 5)+"-"+appt.end_time.substring(0, 5)+")</h1>"+appt.appointment_type+" with Dr. "+appt.last_name+"<br>"+appt.branch_city+" Office <i>(room "+appt.room+")</i><br>"+fixCaps(appt.status)+"</td></tr>");
 		}
 		
-		var past = data.res.filter(appt => Date.now() - Date.parse(appt.date.substring(0, 10) + " " + appt.start_time) >= 0);
+		if(unscheduled.length > 0){
+			$("#appts_text").remove();
+			$("#appts_unsched_text").remove();
+			$("#appts_unsched").remove();
+			$("#appts").append("<h1 id=\"appts_unsched_text\">Unscheduled Appointments</h1>");
+			$("#appts").append("<table id=\"appts_unsched\"></table>");
+			for(appt of unscheduled)
+				$("#appts_unsched").append("<tr><td><b>"+appt.appointment_type+"</b><br>"+appt.branch_city+" Office<br>"+fixCaps(appt.status)+"</td></tr>");
+		}
+		
 		if(past.length > 0){
 			$("#appts_text").remove();
-			$("#appts").append("<h1>Past Appointments</h1>");
+			$("#appts_past_text").remove();
+			$("#appts_past").remove();
+			$("#appts").append("<h1 id=\"appts_past_text\">Past Appointments</h1>");
 			$("#appts").append("<table id=\"appts_past\"></table>");
 			for(appt of past)
-				$("#appts_past").append("<tr><td><h1>"+appt.date.substring(0, 10)+" ("+appt.start_time.substring(0, 5)+"-"+appt.end_time.substring(0, 5)+")</h1><b>"+appt.appointment_type+"</b> with Dr. "+appt.last_name+" <i>(room "+appt.room+")</i><br>"+fixCaps(appt.status)+"</td></tr>");
+				$("#appts_past").append("<tr><td><h1>"+appt.date.substring(0, 10)+" ("+appt.start_time.substring(0, 5)+"-"+appt.end_time.substring(0, 5)+")</h1><b>"+appt.appointment_type+"</b> with Dr. "+appt.last_name+"<br>"+appt.branch_city+" Office <i>(room "+appt.room+")</i><br>"+fixCaps(appt.status)+"</td></tr>");
 		}
 	});
 });
@@ -416,20 +436,14 @@ function sendReview () {
 }
 
 function book_appt(){
-	var branch = $("#bappt_branch").val();
-	var type = $("#bappt_type").val();
-	var date = Date.parse($("#bappt_date").val() + ' ' + $("#bappt_time").val());
-	var time = $("#bappt_time").val();
+	var babranch = $("#bappt_branch").val();
+	var batype =   $("#bappt_type option:selected").text();
+	var badate =   $("#bappt_date").val();
+	var batime =   $("#bappt_time").val();
 	
-	console.log(branch);
-	console.log(type);
-	console.log(date);
-	console.log(time);
-	
-	console.log(Date.now() < date);
+	socket.emit('book_appt', {branch: babranch, type: batype, date: badate, time: batime});
 }
 
 function invoice(){
-	// console.log("TEEEESSSSTTT");
 	socket.emit('fetch_invoice');
 }
