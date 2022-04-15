@@ -65,7 +65,7 @@ $(document).ready(function() {
 
 			if(edata){
 				$("#user_info").append("<h1>Employee Info</h1>"
-							     + "<b>Job</b>: " + edata.employee_type.charAt(0).toUpperCase() + edata.employee_type.slice(1) + "<br>"
+							     + "<b>Job</b>: " + fixCaps(edata.employee_type) + "<br>"
 								 + "<b>Salary</b>: " + edata.salary + "$<br>"
 								 + "<b>Branch</b>: " + edata.branch_city + " Office<br><br>");
 								 
@@ -185,12 +185,31 @@ $(document).ready(function() {
 	});
 	
 	socket.on('fetched_records', function(data){
-		console.log(data);
 		if(data.res.length > 0){
 			for(r of data.res)
 				$("#records_table").append("<tr><td><h1>"+r.details+"</h1>— <i>Dr. "+r.last_name+"</i>  ("+r.appointment_type+" Appointment from "+r.date.substring(0, 10)+")</td></tr>");
 		} else 
 			$("#records").append("No appointment records so far.");
+	});
+	
+	socket.on('fetched_patient_appts', function(data){
+		var upcoming = data.res.filter(appt => Date.now() - Date.parse(appt.date.substring(0, 10) + " " + appt.start_time) < 0);
+		if(upcoming.length > 0){
+			$("#appts_text").remove();
+			$("#appts").append("<h1>Upcoming Appointments</h1>");
+			$("#appts").append("<table id=\"appts_upcoming\"></table>");
+			for(appt of upcoming)
+				$("#appts_upcoming").append("<tr><td><h1>"+appt.date.substring(0, 10)+" ("+appt.start_time.substring(0, 5)+"-"+appt.end_time.substring(0, 5)+")</h1>"+appt.appointment_type+" with Dr. "+appt.last_name+" <i>(room "+appt.room+")</i><br>"+fixCaps(appt.status)+"</td></tr>");
+		}
+		
+		var past = data.res.filter(appt => Date.now() - Date.parse(appt.date.substring(0, 10) + " " + appt.start_time) >= 0);
+		if(past.length > 0){
+			$("#appts_text").remove();
+			$("#appts").append("<h1>Past Appointments</h1>");
+			$("#appts").append("<table id=\"appts_past\"></table>");
+			for(appt of past)
+				$("#appts_past").append("<tr><td><h1>"+appt.date.substring(0, 10)+" ("+appt.start_time.substring(0, 5)+"-"+appt.end_time.substring(0, 5)+")</h1><b>"+appt.appointment_type+"</b> with Dr. "+appt.last_name+" <i>(room "+appt.room+")</i><br>"+fixCaps(appt.status)+"</td></tr>");
+		}
 	});
 });
 
@@ -213,6 +232,10 @@ function registerUserTypeUpdate(){
 
 function calcAge(date){
 	return new Date(Date.now() - date).getUTCFullYear() - 1970;
+}
+
+function fixCaps(string){
+	return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 function addPhone(btn, section){
