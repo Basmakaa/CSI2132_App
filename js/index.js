@@ -14,6 +14,7 @@ $(document).ready(function() {
     });
 	
 	registerUserTypeUpdate();
+	registerUserAgeUpdate();
 	
 	//Socket
 	socket = io.connect('https://csi2132-group12.herokuapp.com/');
@@ -108,7 +109,11 @@ $(document).ready(function() {
 	//Response from Register attempts
 	socket.on('register_res', function(data) {
 		if(data.status == 'error') toastNotify(data.reason);
-		else{	
+		else if(data.status == 'guardianerror'){
+			$("#rguardian").focus();
+			toastNotify("Guardian SSN does not match an existing user");
+			
+		} else{	
 			toastNotify("Account registered succesfully");
 			
 			if(!logged_in) socket.emit('login', {email: data.email, password: data.password});
@@ -145,7 +150,6 @@ $(document).ready(function() {
 	//All-purpose event for notifications from the server
 	//(you probably don't want to use this!)
 	socket.on('inform', function(data){
-		console.log(data.info);
 		toastNotify(data.info);
 	});
 	
@@ -214,6 +218,7 @@ $(document).ready(function() {
 });
 
 function toastNotify(txt){
+	console.log("Toast: " + txt);
 	$("#toast").text(txt);
 	$("#toast").finish().show().delay(4000).fadeOut("slow");
 }
@@ -228,6 +233,12 @@ function swapTo(section, btn){
 function registerUserTypeUpdate(){
 	if($("#rtype").val() == "patient") $("#rpatientinfo").show();
 	else $("#rpatientinfo").hide();
+	registerUserAgeUpdate();
+}
+
+function registerUserAgeUpdate(){
+	if($("#rtype").val() == "patient" && calcAge(Date.parse($("#rdateofbirth").val())) < 15) $("#rguardianinfo").show();
+	else $("#rguardianinfo").hide();
 }
 
 function calcAge(date){
@@ -277,7 +288,6 @@ function valCollectPhones(section){
 		return $(this).val() == "" ? null : $(this).val();
 	}).get();
 	
-	console.log(rphones);
 	return rphones;
 }
 
@@ -346,11 +356,15 @@ function register(){
 	var rpassconf =    $("#rpassconf");
 	var rinsurance =   $("#rinsurance");
 	var rgender =      $("#rgender").val();
+	var rguardian =    null;
 
 	if(rtype == "patient" && calcAge(Date.parse(rdateofbirth.val())) < 15){
-		toastNotify('Registering for users under 15 is a WIP feature.');
-		rdateofbirth.focus(); //TODO: change this the guardian SSN thing
-		return;
+		rguardian = $("#rguardian");
+		if(!rguardian.val().match(/^[0-9]{3}-[0-9]{2}-[0-9]{4}$/)){
+			toastNotify('SSNs must be of the format 012-34-5678');
+			rguardian.focus();
+			return;
+		}
 	}
 	
 	if(!rssn.val().match(/^[0-9]{3}-[0-9]{2}-[0-9]{4}$/)){ 
@@ -383,12 +397,12 @@ function register(){
 	var rphones = valCollectPhones('register');
 
 	if(valAlpha(rfirstname) && valAlpha(rlastname) && (rmiddlename.val() == "" || valAlpha(rmiddlename)) 
-		&& valAlpha(rstreetname) && valAlpha(rcity) && valAlpha(rprovince)
+		&& valAlpha(rstreetname) && valAlpha(rcity) && valAlpha(rprovince) 
 		&& valEmail(remail) && valPassword(rpass) && rphones != null){
 		socket.emit('register', {type: rtype, fname: rfirstname.val(), mname: rmiddlename.val(), lname: rlastname.val(), 
 								 dob: rdateofbirth.val(), ssn: rssn.val(), streetn: rstreetn.val(), street: rstreetname.val(), 
 								 city: rcity.val(), prov: rprovince.val(), email: remail.val(), password: rpass.val(), phones: rphones,
-								 insur: rinsurance.val(), gender: rgender});
+								 insur: rinsurance.val(), gender: rgender, guardian: rguardian.val()});
 	}
 }
 

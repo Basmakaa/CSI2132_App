@@ -63,11 +63,16 @@
 					
 					<label for="rfirstname">Full Name</label><br>
 					<input type="text" id="rfirstname" placeholder="First" class="small">
-					<input type="text" id="rmiddlename" placeholder="Middle" class="small">
+					<input type="text" id="rmiddlename" placeholder="Middle (Optional)" class="small">
 					<input type="text" id="rlastname" placeholder="Last" class="small"><br>
 					
 					<label for="rdateofbirth">Date of Birth</label><br>
-					<input type="text" id="rdateofbirth" placeholder="mm/dd/yyyy"><br>
+					<input type="text" id="rdateofbirth" placeholder="mm/dd/yyyy" onchange="registerUserAgeUpdate()"><br>
+					
+					<div id="rguardianinfo" hidden>
+						<label for="rguardian">Legal Guardian SSN</label><br>
+						<input type="text" id="rguardian" placeholder="012-34-5678"><br>
+					</div>
 					
 					<div id="rpatientinfo" hidden>
 						<label for="rgender">Gender</label><br>

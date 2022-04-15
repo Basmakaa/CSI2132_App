@@ -154,12 +154,12 @@ label, button, #menulist li{
 	right: 30px;
 }
 
-table {
+#main table {
 	margin: 0 auto;
 	width: 80%;
 }
 
-tr{
+#main tr{
 	border-radius: 5px;
 	border: 2px solid #6461a0;
 	text-align: center;
@@ -169,10 +169,10 @@ tr{
 	box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
 }
 
-tr, td{
+#main tr, #main td{
 	width: 100%;
 	display: block;
 }
 
-tr:nth-child(even) {background: #dde1e7}
-tr:nth-child(odd) {background: #FFF}
+#main tr:nth-child(even) {background: #dde1e7}
+#main tr:nth-child(odd) {background: #FFF}
