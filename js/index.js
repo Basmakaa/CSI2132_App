@@ -127,29 +127,18 @@ $(document).ready(function() {
 		else toastNotify("Phone list updated succesfully");	
 	});  
 	
+	//Response from Appointment booking attempts
 	socket.on('book_appt_res', function(data) {
         if(data.status == 'error') toastNotify(data.reason);
         else toastNotify("Appointment booked");
     });
 
+	//Response from Review adding attemps
     socket.on('add_user_review_res', function(data) {
         if(data.status == 'error') console.log(data.reason);
         else toastNotify("Added user review");
         
     });
-	
-	//Response to invoice request.
-	// socket.on('fetch_invoice_res', function(data) {
-	// 	if(data.status == 'error') console.log(data.reason);
-	// 	else{	
-	// 		console.log("invoices fetched.");
-	// 		data.result;
-	// 		for(invoice in data.result){
-	// 			console.log(invoice.Date);
-	// 		}
-	// 	}
-		
-	// });
 	
 	//All-purpose event for notifications from the server
 	//(you probably don't want to use this!)
@@ -234,6 +223,15 @@ $(document).ready(function() {
 			for(appt of past)
 				$("#appts_past").append("<tr><td><h1>"+appt.date.substring(0, 10)+" ("+appt.start_time.substring(0, 5)+"-"+appt.end_time.substring(0, 5)+")</h1><b>"+appt.appointment_type+"</b> with Dr. "+appt.last_name+"<br>"+appt.branch_city+" Office <i>(room "+appt.room+")</i><br>"+fixCaps(appt.status)+"</td></tr>");
 		}
+	});
+	
+	socket.on('fetched_invoices', function(data) {
+		console.log(data);
+		if(data.res.length > 0){
+			for(invoice of data.res)
+				$("#invoices_table").append("<tr><td><h1>"+invoice.patient_charge+"$ to pay</h1>"+Math.floor(invoice.total_charge)+"$ base charge<br>"+Math.floor(invoice.insurance_charge)+"$ paid by insurance<br>Filed on "+invoice.date.substring(0, 10)+"</td></tr>");
+		} else 
+			$("#invoices").append("No invoices so far.");
 	});
 });
 
@@ -442,8 +440,4 @@ function book_appt(){
 	var batime =   $("#bappt_time").val();
 	
 	socket.emit('book_appt', {branch: babranch, type: batype, date: badate, time: batime});
-}
-
-function invoice(){
-	socket.emit('fetch_invoice');
 }
